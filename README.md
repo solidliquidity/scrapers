@@ -1,5 +1,5 @@
 # Sequel scrapers
-Purpose: This script gathers company information from websites, extracting product details, founders’ names, and uses an LLM to generate insights.
+This package provides structured classes to extract and analyze company data from websites. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph. More information and examples can be found here: https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing. 
 
 ## Table of Contents
 - [Installation](#installation)
@@ -13,21 +13,12 @@ Purpose: This script gathers company information from websites, extracting produ
 - [Contributing](#contributing)
 - [License](#license)
 
-
 # Installation
 
 pip install -r requirements.txt
 
 # Usage
 '''
-1. URLsoup extracts data from a webpage taking the homepage's URL as a single argument without the use of LLMs. Functions allow you to get all links, get all text data for a given link, and extract all names within that text.
-
-2. LLMscrape uses SmartScraperGraph. More information and further examples can be found here
-
-https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing. 
-
-The model can be parsed into LLMscaper. The below is taken from main.py.
-
 scraper = URLsoup(url) 
 text = scraper.get_text()
 links = scraper.get_links()
@@ -43,6 +34,7 @@ response = llm_scraper.generate_response(
 
 print(f"LLM Response:\n{response}\n")
 '''
+
 # How this can be improved
 
 Additional Data Sources:
@@ -56,8 +48,10 @@ Implement keyword scanning or LLM analysis to search for mentions of funding rou
 
 # Further questions
 
-## why build https://www.pitchleague.ai?
+## Why build https://www.pitchleague.ai?
 
 Competition motivates founders to use the site more. This creates a wider user base and provides Sequel with more data to use. 
 
-## how can we combine information from pitch decks and crawling websites?
+## How to combine information from pitch decks and crawling websites?
+
+Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be validated through the website data and monitored over time to see if their objectives are being met. More information, from alternative data sources, can be added too.
