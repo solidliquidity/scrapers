@@ -21,6 +21,8 @@ pip install -r requirements.txt
 
 # Usage
 ```
+from scrapers import URLsoup, LLMscraper
+
 scraper = URLsoup(url) 
 text = scraper.get_text()
 links = scraper.get_links()
