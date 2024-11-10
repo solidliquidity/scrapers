@@ -1,5 +1,5 @@
 # Sequel scrapers
-This package provides structured classes to extract and analyze company data from websites. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph. More information and examples can be found here: https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing. 
+This package provides structured classes to extract and analyze company data from websites. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph (further examples: https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing).
 
 ## Table of Contents
 - [Installation](#installation)
@@ -46,8 +46,8 @@ Integrate the LinkedIn or Crunchbase API to supplement the data on founders and 
 
 Open Graph Metadata Extraction:
 Many websites have metadata that describes the business, product, or team. Using a simple Open Graph parser could help pull additional structured information, especially for newer startups.
-Growth Metrics:
 
+Growth Metrics:
 Implement keyword scanning or LLM analysis to search for mentions of funding rounds, partnerships, or new product launches. These indicators suggest the startup’s growth potential.
 
 # Further questions
@@ -58,4 +58,4 @@ Competition motivates founders to use the site more. This creates a wider user b
 
 ## How to combine information from pitch decks and crawling websites?
 
-Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be validated through the website data and monitored over time to see if their objectives are being met. More information, from alternative data sources, can be added too.
+Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be validated through the website data and monitored over time to see if their objectives are being met. More information from alternative data sources can be added too to add to similarity searches and clustering. 
