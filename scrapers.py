@@ -1,12 +1,17 @@
+import pandas as pd
+import requests
 from typing import List, Optional, Dict
 from transformers import AutoTokenizer, AutoModelForCausalLM, GPTNeoXForCausalLM
 import logging
 from bs4 import BeautifulSoup
-import requests
 from urllib.parse import urljoin
 from base_classes import BaseScraper, BaseLLMScraper
+import spacy
 
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class URLsoup(BaseScraper):
     """Concrete implementation of BaseScraper for web scraping."""
@@ -44,31 +49,53 @@ class URLsoup(BaseScraper):
             self._text = self._soup.get_text(separator="\n").strip()
         return self._text or 'No text available'
 
-## add another for OpenAI
+    def get_names(self):
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(self.text)
+        names = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
+
+        return names
+
+    def get_URLsoup_df(url: str) -> pd.DataFrame:
+        main_soup = URLsoup(url)
+        main_links = main_soup.get_links()
+        data = {'url': [], 'names': [], 'texts': []}
+
+        for link in main_links:
+            link_soup = URLsoup(link)
+            data['url'].append(link)
+            data['texts'].append(link_soup.get_text())
+            data['names'].append(link_soup.get_names())
+
+        URLsoup_df = pd.DataFrame(data)
+        return URLsoup_df
+
+
 class LLMscraper(BaseLLMScraper):
     """Implementation of BaseLLMScraper for Hugging Face models."""
 
-    def __init__(self, model_name: str):
-        super().__init__(model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+    def __init__(self, model_name: str, token: str):
+        super().__init__(model_name, token)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, token=self.token)
         self.model = self.create_model(model_name)
 
-    def create_model(self, model_name: str, use_gpu: bool = True, precision: str = "half"):
-        """Load a causal language model with optional GPU and precision settings."""
+    def create_model(self, model_name: str):
+        """Load a causal language model."""
         try:
-            model = AutoModelForCausalLM.from_pretrained(model_name)
-            if use_gpu and torch.cuda.is_available():
-                if precision == "half":
-                    model = model.half().cuda()
-                elif precision == "float":
-                    model = model.cuda()
+            # Explicitly pass the token to access private models
+            model = AutoModelForCausalLM.from_pretrained(model_name, use_auth_token=self.token)
             return model
         except Exception as e:
             raise ValueError(f"Failed to load model '{model_name}': {e}")
 
     def generate_response(self, prompt: str, max_length: int = 1024) -> str:
         """Generate a response using the loaded model."""
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=max_length)
+        inputs = self.tokenizer(
+            prompt,
+            return_tensors="pt",
+            truncation=True,
+            max_length=max_length
+        )
         outputs = self.model.generate(**inputs, max_new_tokens=150)
         return self.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
@@ -83,3 +110,10 @@ class LLMscraper(BaseLLMScraper):
             "verbose": True,
             "headless": True
         }
+
+    def get_LLMscraper_df(self, url: str, prompt: str) -> pd.DataFrame:
+        """Generate a DataFrame containing the model's response for the provided URL."""
+        response = self.generate_response(prompt)
+        data = {'url': [url], 'response': [response]}
+        LLMscraper_df = pd.DataFrame(data)
+        return LLMscraper_df

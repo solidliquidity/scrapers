@@ -1,5 +1,5 @@
 # Sequel scrapers
-This package provides structured classes to extract and analyze company data from websites. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph (further examples: https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing).
+This package provides structured classes to extract company data from their home website. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph (where more information and further examples can be found here https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing).
 
 ## Table of Contents
 - [Installation](#installation)
@@ -21,41 +21,37 @@ pip install -r requirements.txt
 
 # Usage
 ```
-from scrapers import URLsoup, LLMscraper
+# Option 1: scrape page without LLM.
+urlsoup_instance = URLsoup(url)
+df1 = urlsoup_instance.get_URLsoup_df()
+URLsoup_df = pd.concat([URLsoup_df, df1], ignore_index=True)
 
-scraper = URLsoup(url) 
-text = scraper.get_text()
-links = scraper.get_links()
-
-print(f"Extracted text:\n{text[:500]}...\n")  # Show a snippet of text
-print(f"Extracted links: {links}\n")
-
-model_name = 'gpt-neox'  # Choose model
-llm_scraper = LLMscraper(model_name)
-response = llm_scraper.generate_response(
-    f"Summarize the services offered by the company at {url} and list any founders' names mentioned."
-)
-
-print(f"LLM Response:\n{response}\n")
+# Option 2: scrape page with LLM. 
+# input hugging face token
+token = '****'
+# choose model
+model_name = 'EleutherAI/gpt-neox-20b' 
+# choose prompt
+prompt = f"Summarize the services offered by the company at {url} and list any founders' names mentioned."'
+llm_scraper_instance = LLMscraper(model_name, token)
+df2 = llm_scraper_instance.get_LLMscraper_df(url, prompt)
+LLMscraper_df = pd.concat([LLMscraper_df, df2], ignore_index=True)
 ```
 
 # How this can be improved
 
-Additional Data Sources:
-Integrate the LinkedIn or Crunchbase API to supplement the data on founders and growth metrics. LinkedIn can confirm founder names, and Crunchbase can provide investment rounds or growth rates.
+1. More models- build on option 2 to integrate OpenAI.
 
-Open Graph Metadata Extraction:
-Many websites have metadata that describes the business, product, or team. Using a simple Open Graph parser could help pull additional structured information, especially for newer startups.
+2. More sources- Linkedin, Crunchbase APIs to get founder background and growth metrics.
 
-Growth Metrics:
-Implement keyword scanning or LLM analysis to search for mentions of funding rounds, partnerships, or new product launches. These indicators suggest the startup’s growth potential.
+3. Clean the broad data capture from option 1. Identify keyworks, feed to LLM to derive insights.
 
 # Further questions
 
 ## Why build https://www.pitchleague.ai?
 
-Competition motivates founders to use the site more. This creates a wider user base and provides Sequel with more data to use. 
+Founders use pitchleague to get feedback improve their pitches. Competition score motivates founders to use the site more. This creates a greater network and more data for sequel to capture. 
 
 ## How to combine information from pitch decks and crawling websites?
 
-Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be validated through the website data and monitored over time to see if their objectives are being met. More information from alternative data sources can be added too to add to similarity searches and clustering. 
+Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be checked with the corresponding website data and monitored over time to see if their objectives are being met. More information from alternative data sources can be added too, to add to similarity searches and clustering. 

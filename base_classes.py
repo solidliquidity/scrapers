@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Dict
 import logging
-from abc import ABC, abstractmethod
-from typing import Dict
 from bs4 import BeautifulSoup
+import pandas as pd
 
 
 class BaseScraper(ABC):
@@ -27,14 +26,25 @@ class BaseScraper(ABC):
         """Retrieve all text content from the page."""
         pass
 
+    @abstractmethod
+    def get_names(self) -> List[str]:
+        """Retrieve all names (persons) from the text content."""
+        pass
+
+    @abstractmethod
+    def get_URLsoup_df(self) -> pd.DataFrame:
+        """Generate a DataFrame containing links, names, and texts from the main URL."""
+        pass
+
 
 class BaseLLMScraper(ABC):
     """Abstract base class for language model scrapers."""
 
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, token: str):
         self.model_name = model_name
+        self.token = token
         self.model = self.create_model(model_name)
-
+        
     @abstractmethod
     def create_model(self, model_name: str):
         """Create and initialize the model."""
@@ -48,4 +58,9 @@ class BaseLLMScraper(ABC):
     @abstractmethod
     def create_graph_config(self) -> Dict:
         """Create configuration for graph generation."""
+        pass
+
+    @abstractmethod
+    def get_LLMscraper_df(self, url: str) -> pd.DataFrame:
+        """Generate a DataFrame containing the model's response for the provided URL."""
         pass

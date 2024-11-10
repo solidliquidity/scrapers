@@ -1,5 +1,6 @@
 import logging
 from scrapers import URLsoup, LLMscraper
+import pandas as pd
 
 # Sample test websites
 websites = [
@@ -14,25 +15,37 @@ websites = [
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
+
+    # choose model
+    model_name = 'EleutherAI/gpt-neox-20b' 
+
+    URLsoup_df = pd.DataFrame()
+    LLMscraper_df = pd.DataFrame()
+     
     for url in websites:
         logging.info(f"Processing {url}...")
 
-        # Step 1: Scrape the page
-        scraper = URLsoup(url)
-        text = scraper.get_text()
-        links = scraper.get_links()
+        # choose prompt
+        prompt = f"Summarize the services offered by the company at {url} and list any founders' names mentioned."'
 
-        logging.info(f"Extracted text:\n{text[:500]}...")  # Show a snippet of text
-        logging.info(f"Extracted links: {links}")
+        # 1: scrape page without LLMs and create dataframe
+        urlsoup_instance = URLsoup(url)
+        df1 = urlsoup_instance.get_URLsoup_df()
+        URLsoup_df = pd.concat([URLsoup_df, df1], ignore_index=True)
 
-        # Step 2: Use LLM to analyze text
-        model_name = 'gpt-neox'  # Choose model
-        llm_scraper = LLMscraper(model_name)
-        response = llm_scraper.generate_response(
-            f"Summarize the services offered by the company at {url} and list any founders' names mentioned."
-        )
+        # Step 2: scrape page with LLM and create dataframe
+        token = '****'
+        llm_scraper_instance = LLMscraper(model_name, token)
+        df2 = llm_scraper_instance.get_LLMscraper_df(url, prompt)
+        LLMscraper_df = pd.concat([LLMscraper_df, df2], ignore_index=True)
 
-        logging.info(f"LLM Response:\n{response}\n")
+        logging.info(f"Processed {url} successfully.")
+
+    # Display or save the final DataFrames
+    logging.info("URLsoup DataFrame:")
+    logging.info(URLsoup_df)
+    logging.info("LLMscraper DataFrame:")
+    logging.info(LLMscraper_df)
 
 if __name__ == "__main__":
     main()
