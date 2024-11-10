@@ -15,10 +15,12 @@ This package provides structured classes to extract and analyze company data fro
 
 # Installation
 
+```
 pip install -r requirements.txt
+```
 
 # Usage
-'''
+```
 scraper = URLsoup(url) 
 text = scraper.get_text()
 links = scraper.get_links()
@@ -33,7 +35,7 @@ response = llm_scraper.generate_response(
 )
 
 print(f"LLM Response:\n{response}\n")
-'''
+```
 
 # How this can be improved
 
