@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict
-import logging
 from bs4 import BeautifulSoup
 import pandas as pd
 
@@ -44,7 +43,7 @@ class BaseLLMScraper(ABC):
         self.model_name = model_name
         self.token = token
         self.model = self.create_model(model_name)
-        
+
     @abstractmethod
     def create_model(self, model_name: str):
         """Create and initialize the model."""
