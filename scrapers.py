@@ -53,17 +53,18 @@ class LLMscraper(BaseLLMScraper):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = self.create_model(model_name)
 
-    ## refine this to remove the different models. add flexibility into it (generalise)
-    def create_model(self, model_name: str):
-        """Load the model based on the name."""
-        if 'mistral' in model_name:
-            return AutoModelForCausalLM.from_pretrained(model_name)
-        elif 'neox' in model_name:
-            return GPTNeoXForCausalLM.from_pretrained(model_name).half().cuda()
-        elif 'ollama' in model_name:
-            return model_name  # Assuming 'ollama' is a placeholder for some other model type
-        else:
-            raise ValueError("Model type not supported")
+    def create_model(self, model_name: str, use_gpu: bool = True, precision: str = "half"):
+        """Load a causal language model with optional GPU and precision settings."""
+        try:
+            model = AutoModelForCausalLM.from_pretrained(model_name)
+            if use_gpu and torch.cuda.is_available():
+                if precision == "half":
+                    model = model.half().cuda()
+                elif precision == "float":
+                    model = model.cuda()
+            return model
+        except Exception as e:
+            raise ValueError(f"Failed to load model '{model_name}': {e}")
 
     def generate_response(self, prompt: str, max_length: int = 1024) -> str:
         """Generate a response using the loaded model."""
