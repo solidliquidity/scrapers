@@ -1,5 +1,5 @@
 # Sequel scrapers
-This package provides structured classes to extract company data from their home website. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph (where more information and further examples can be found here https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing).
+This package provides structured classes to extract company data from their home website. It includes URLsoup for straightforward text and link extraction, as well as LLMScrape for leveraging language models with the use of SmartScraperGraph (information and further examples can be found here https://colab.research.google.com/drive/1sEZBonBMGP44CtO6GQTwAlL0BGJXjtfd?usp=sharing).
 
 ## Table of Contents
 - [Installation](#installation)
