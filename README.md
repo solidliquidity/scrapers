@@ -7,9 +7,6 @@ This package provides structured classes to extract company data from their home
   - [URLsoup](#urlsoup)
   - [LLMScrape](#llmscrape)
 - [Improvements](#improvements)
-- [Further Questions](#further-questions)
-  - [Why Build PitchLeague.ai?](#why-build-pitchleagueai)
-  - [Combining Information from Pitch Decks and Crawling Websites](#combining-information-from-pitch-decks-and-crawling-websites)
 
 # Installation
 
@@ -49,13 +46,3 @@ LLMscraper_df = pd.concat([LLMscraper_df, df2], ignore_index=True)
 3. Clean the broad data capture from option 1. Identify keyworks, feed to LLM to derive insights.
 
 4. Unit tests
-
-# Further questions
-
-## Why build https://www.pitchleague.ai?
-
-Founders use pitchleague to get feedback improve their pitches. Competition score motivates founders to use the site more. This creates a greater network and more data for sequel to capture. 
-
-## How to combine information from pitch decks and crawling websites?
-
-Vector databases can be used, where data from pitch decks and websites is embedded. The claims in the pitch deck can be checked with the corresponding website data and monitored over time to see if their objectives are being met. More information from alternative data sources can be added too, to add to similarity searches and clustering. 
